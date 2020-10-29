@@ -20,9 +20,21 @@ public class ChatServer implements Runnable {
           while( (text = indata.readLine()) != null){
               System.out.println("Received: " + text);
               System.out.println("From: " + s.getLocalAddress());
+              forwardMessage(text, s);
           }
       s.shutdownInput();
       }
+    } catch (IOException e) {
+        System.out.println("ajaj");
+    }
+  }
+
+  public static void forwardMessage(String text, Socket s) {
+    try {
+      System.out.println("time to forward " + text);
+      PrintStream out = new PrintStream(s.getOutputStream());
+      out.println(text);
+      s.shutdownOutput();
     } catch (IOException e) {
         System.out.println("ajaj");
     }
