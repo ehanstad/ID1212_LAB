@@ -19,49 +19,45 @@ public class ChatClient implements Runnable {
       BufferedReader indata = new BufferedReader(new InputStreamReader(System.in));
       String text;
       System.out.print("Enter text to send: ");
-      while( (text = indata.readLine()) != null){
-          out.println(text);
-          System.out.print("Enter text to send: ");
+      while ((text = indata.readLine()) != null) {
+        out.println(text);
+        System.out.print("Enter text to send: ");
       }
       s.shutdownOutput();
     } catch (IOException e) {
-        System.out.println("ajaj");
+      System.out.println("ajaj");
     }
   }
 
   private void listenForMessage() {
     try {
       System.out.println("HERE");
-      Socket socket = null;
-      String text = "";
-      while((socket=s) != null) {
-        BufferedReader indata =
-                new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        while( (text = indata.readLine()) != null){
+      String text = null;
+      BufferedReader indata = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
+      while (this.s != null) {
+        while ((text = indata.readLine()) != null) {
           System.out.println("NEW MESSAGE: " + text);
         }
       }
-      s.shutdownInput();
+      this.s.shutdownInput();
     } catch (IOException e) {
-        System.out.println("ajaj");
+      System.out.println("ajajaj");
     }
   }
 
   public void run() {
-    if(indicator=='a'){
+    if (indicator == 'a') {
       writeMessage();
-    }
-    else {
+    } else {
       listenForMessage();
     }
   }
 
-  public static void main(String[] args) throws Exception{
-      Socket ws = new Socket("localhost",1234);
-      Socket ls = new Socket("localhost",1234);
-      Runnable wr = new ChatClient(ws,'a');
-      (new Thread(wr)).start();
-      Runnable lr = new ChatClient(ls,'b');
-      (new Thread(lr)).start();
+  public static void main(String[] args) throws Exception {
+    Socket socket = new Socket("localhost", 1234);
+    Runnable wr = new ChatClient(socket, 'a');
+    (new Thread(wr)).start();
+    Runnable lr = new ChatClient(socket, 'b');
+    (new Thread(lr)).start();
   }
 }
