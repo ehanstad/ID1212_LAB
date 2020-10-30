@@ -14,7 +14,6 @@ public class ChatClient implements Runnable {
 
   private void writeMessage() {
     try {
-      System.out.println("THERE");
       PrintStream out = new PrintStream(s.getOutputStream());
       BufferedReader indata = new BufferedReader(new InputStreamReader(System.in));
       String text;
@@ -31,7 +30,6 @@ public class ChatClient implements Runnable {
 
   private void listenForMessage() {
     try {
-      System.out.println("HERE");
       String text = null;
       BufferedReader indata = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
       while (this.s != null) {
