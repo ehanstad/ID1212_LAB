@@ -20,7 +20,7 @@ public class ClientThread extends Thread {
         while ((text = indata.readLine()) != null) {
           System.out.println("Received: " + text);
           System.out.println("From: " + this.cs.getLocalAddress());
-          server.forwardMessage(text);
+          server.forwardMessage(text, this);
         }
         this.cs.shutdownInput();
       }

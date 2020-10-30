@@ -19,9 +19,11 @@ public class ChatServer {
     }
   }
 
-  public void forwardMessage(String message) {
+  public void forwardMessage(String message, ClientThread ct) {
     for(ClientThread client : clients) {
-      client.receiveMessage(message);
+      if(client!=ct) {
+        client.receiveMessage(message);
+      }
     }
   }
 

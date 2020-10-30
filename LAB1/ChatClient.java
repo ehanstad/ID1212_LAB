@@ -20,7 +20,6 @@ public class ChatClient implements Runnable {
       System.out.print("Enter text to send: ");
       while ((text = indata.readLine()) != null) {
         out.println(text);
-        System.out.print("Enter text to send: ");
       }
       s.shutdownOutput();
     } catch (IOException e) {
