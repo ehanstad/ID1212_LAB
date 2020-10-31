@@ -1,4 +1,3 @@
-import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,27 +7,27 @@ public class ChatServer {
   private List<ClientThread> clients = new ArrayList<>();
 
   private void start() throws Exception {
-    ServerSocket ss = new ServerSocket(1234);
-    System.out.println("Server is open on port 1234");
+    ServerSocket serverSocket = new ServerSocket(1234);
+    System.out.println("Server started on port 1234");
 
     while (true) {
-      Socket cs = ss.accept();
-      ClientThread t = new ClientThread(cs, this);
-      t.start();
-      clients.add(t);
+      Socket clientSocket = serverSocket.accept();
+      ClientThread clientThread = new ClientThread(clientSocket, this);
+      clientThread.start();
+      clients.add(clientThread);
     }
   }
 
   public void forwardMessage(String message, ClientThread ct) {
-    for(ClientThread client : clients) {
-      if(client!=ct) {
+    for (ClientThread client : clients) {
+      if (client != ct) {
         client.receiveMessage(message);
       }
     }
   }
 
   public static void main(String[] args) throws Exception {
-    ChatServer cs = new ChatServer();
-    cs.start();
+    ChatServer chatServer = new ChatServer();
+    chatServer.start();
   }
 }

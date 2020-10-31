@@ -1,41 +1,40 @@
 import java.io.*;
 import java.net.*;
-import java.lang.*;
 
 public class ClientThread extends Thread {
 
-  private Socket cs;
+  private Socket socket;
   private ChatServer server;
 
-  public ClientThread(Socket cs, ChatServer server) {
-    this.cs = cs;
+  public ClientThread(Socket socket, ChatServer server) {
+    this.socket = socket;
     this.server = server;
   }
 
   public void run() {
     try {
       String text = "";
-      while (this.cs != null) {
-        BufferedReader indata = new BufferedReader(new InputStreamReader(this.cs.getInputStream()));
+      while (this.socket != null) {
+        BufferedReader indata = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         while ((text = indata.readLine()) != null) {
           System.out.println("Received: " + text);
-          System.out.println("From: " + this.cs.getLocalAddress());
+          System.out.println("From: " + this.socket.getLocalAddress());
           server.forwardMessage(text, this);
         }
-        this.cs.shutdownInput();
+        this.socket.shutdownInput();
       }
     } catch (IOException e) {
-      System.out.println("ajaj");
+      e.printStackTrace();
     }
   }
 
   public void receiveMessage(String message) {
     try {
-      PrintWriter out = new PrintWriter(this.cs.getOutputStream(), true);
+      PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
       out.println(message);
       out.flush();
     } catch (IOException e) {
-      System.out.println("ajaj");
+      e.printStackTrace();
     }
   }
 }
