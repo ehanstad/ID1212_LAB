@@ -4,18 +4,19 @@ import java.util.Hashtable;
 
 public class HttpServer {
   private int port;
-  private Hashtable<String, Guess> instances =
-    new Hashtable<String, Guess>();
+  private Hashtable<String, Guess> instances = new Hashtable<String, Guess>();
 
   public HttpServer(Integer port) {
     this.port = port;
   }
 
   public void saveInstance(Guess guess, String client) {
+    System.out.println("saveInstance: " + client);
     instances.put(client, guess);
   }
 
   public Guess getInstance(String client) {
+    System.out.println("GetInstance: " + client);
     return instances.get(client);
   }
 

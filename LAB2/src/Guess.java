@@ -8,7 +8,7 @@ public class Guess {
   private int guessedNumber;
 
   public Guess() {
-    this.magicNumber = (int)(Math.random()*100)+1;
+    this.magicNumber = (int) (Math.random() * 100) + 1;
   }
 
   public void setGuessedNumber(int gn) {
@@ -29,9 +29,9 @@ public class Guess {
   }
 
   public short checkGuess(int guess) {
-    if(guess < this.magicNumber){
+    if (guess < this.magicNumber) {
       return -1;
-    } else if(guess > this.magicNumber) {
+    } else if (guess > this.magicNumber) {
       return 1;
     } else {
       return 0;
