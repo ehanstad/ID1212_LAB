@@ -1,14 +1,22 @@
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Hashtable;
 
 public class HttpServer {
   private int port;
-  private List<Guess> instances = new ArrayList<>();
+  private Hashtable<String, Guess> instances =
+    new Hashtable<String, Guess>();
 
-  public HttpServer(int port) {
+  public HttpServer(Integer port) {
     this.port = port;
+  }
+
+  public void saveInstance(Guess guess, String client) {
+    instances.put(client, guess);
+  }
+
+  public Guess getInstance(String client) {
+    return instances.get(client);
   }
 
   void run() throws IOException {
@@ -18,7 +26,7 @@ public class HttpServer {
       Socket clientSocket = serverSocket.accept();
       System.out.println("Client connected: " + clientSocket.getLocalAddress());
 
-      HttpClientThread client = new HttpClientThread(clientSocket, serverSocket);
+      HttpClientThread client = new HttpClientThread(clientSocket, this);
       client.start();
     }
   }

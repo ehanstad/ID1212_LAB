@@ -1,26 +1,35 @@
 import java.io.*;
 import java.net.*;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 public class HttpClientThread extends Thread {
 
   private Socket socket;
-  private ServerSocket server;
+  private HttpServer server;
   private Guess instance;
 
-  public HttpClientThread(Socket socket, ServerSocket server){
+  public HttpClientThread(Socket socket, HttpServer server){
     this.socket = socket;
     this.server = server;
-    this.instance = new Guess();
   }
 
   private void createPostResault(PrintStream res, StringTokenizer reqTokens) throws IOException {
+    int guessedNumber = 0;
+    String uniqueID = null;
     while(reqTokens.hasMoreTokens()){
       if((reqTokens.nextToken()).contains("guessedNumber")) {
-        int guessedNumber = Integer.parseInt(reqTokens.nextToken());
-        this.instance.setGuessedNumber(guessedNumber);
+        guessedNumber = Integer.parseInt(reqTokens.nextToken());
+      }
+      if((reqTokens.nextToken()).equals("uniqueID")) {
+        uniqueID = reqTokens.nextToken();
+        System.out.println(uniqueID);
       }
     }
+    Guess guess = server.getInstance(uniqueID);
+    this.instance = guess;
+
+    this.instance.setGuessedNumber(guessedNumber);
     short indicator = this.instance.checkGuess(this.instance.getGuessedNumber());
     res.println("HTTP/1.1 200 OK");
     res.println("Server: Counting game 1.0");
@@ -48,6 +57,9 @@ public class HttpClientThread extends Thread {
   private void createGetResault(PrintStream res, StringTokenizer reqTokens) throws IOException {
     String path = reqTokens.nextToken();
     File file = new File(".." + path);
+    this.instance = new Guess();
+    String uniqueID = UUID.randomUUID().toString();;
+    server.saveInstance(this.instance, uniqueID);
 
     if (!"/favicon".equals(path)) {
       if (file.exists() && !file.isDirectory()) {
@@ -57,6 +69,8 @@ public class HttpClientThread extends Thread {
           res.println("Content-Type: text/html");
         if (path.indexOf(".gif") != -1)
           res.println("Content-Type: image/gif");
+        res.println("Set-Cookie: uniqueID=" + uniqueID);
+        res.println("Set-Cookie: test=42");
         res.println();
 
         FileInputStream in = new FileInputStream(file);
