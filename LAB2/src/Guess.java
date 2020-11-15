@@ -1,5 +1,4 @@
 import java.lang.Math;
-import java.net.*;
 
 public class Guess {
 

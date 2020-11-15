@@ -69,7 +69,6 @@ public class HttpClientThread extends Thread {
   public void run() {
     while (!this.socket.isClosed()) {
       try {
-        BufferedReader in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         StringBuilder req = new StringBuilder();
 
         do {
