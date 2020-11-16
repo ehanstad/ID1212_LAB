@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.*;
 import java.util.Hashtable;
+import java.util.Enumeration;
 
 public class HttpServer {
   private int port;
@@ -17,7 +18,15 @@ public class HttpServer {
 
   public Guess getInstance(String client) {
     System.out.println("GetInstance: " + client);
-    return instances.get(client);
+    Enumeration<String> enumer = instances.keys();
+    Guess instance = null;
+    while(enumer.hasMoreElements()) {
+      String nElem = enumer.nextElement();
+      if(client.contains(nElem)){
+        instance = instances.get(nElem);
+      }
+    }
+    return instance;
   }
 
   void run() throws IOException {
