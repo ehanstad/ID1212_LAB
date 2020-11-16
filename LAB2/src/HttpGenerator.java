@@ -35,7 +35,11 @@ public class HttpGenerator {
       sb.append("<input type='text' name='guessedNumber' />");
       sb.append("<input type='submit' value='submit' /></form>");
     } else {
-      sb.append("<h2>Correct</h2>");
+      sb.append("<h2>You made it in ");
+      sb.append(noGuesses + " guess(es).</h2>");
+      sb.append("<p>Press the button to play again</p>");
+      sb.append("<form action='../index.html' method='get' >");
+      sb.append("<input type='submit' value='New game.' /></form>");
     }
     sb.append("</html></body>");
     return sb.toString();
