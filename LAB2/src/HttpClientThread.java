@@ -19,37 +19,37 @@ public class HttpClientThread extends Thread {
     }
   }
 
-  private void createPostResault(StringTokenizer reqTokens) throws IOException {
+  private void handlePost(StringTokenizer reqTokens) throws IOException {
     int guessedNumber = 0;
     String token;
-    String uniqueID = null;
+    String sessionID = null;
     while (reqTokens.hasMoreTokens()) {
       token = reqTokens.nextToken();
       if (token.contains("guessedNumber")) {
         guessedNumber = Integer.parseInt(reqTokens.nextToken());
       }
-      if (token.equals("uniqueID")) {
-        uniqueID = reqTokens.nextToken().toString();
+      if (token.equals("sessionID")) {
+        sessionID = reqTokens.nextToken().toString();
       }
     }
-    Guess guess = server.getInstance(uniqueID);
+    Guess guess = server.getSession(sessionID);
     if (!(guess == null)) {
       guess.setGuessedNumber(guessedNumber);
       int noGuesses = guess.getNoGuesses();
       short cmp = guess.checkGuess(guessedNumber);
       this.res.println(HttpGenerator.getGuessRes(guessedNumber, noGuesses, cmp));
     } else {
-      System.out.println("guess is null");
+      // something went wrong
     }
   }
 
-  private void createGetResault(StringTokenizer reqTokens) throws IOException {
+  private void handleGet(StringTokenizer reqTokens) throws IOException {
     String path = reqTokens.nextToken();
     if (!"/favicon".equals(path)) {
       if ("/index.html".equals(path)) {
-        String uniqueID = UUID.randomUUID().toString();
-        server.saveInstance(uniqueID);
-        this.res.println(HttpGenerator.getStartRes(uniqueID));
+        String sessionID = UUID.randomUUID().toString();
+        server.saveSession(sessionID);
+        this.res.println(HttpGenerator.getStartRes(sessionID));
       } else {
         this.res.println(HttpGenerator.getNotFoundRes());
       }
@@ -61,9 +61,9 @@ public class HttpClientThread extends Thread {
     String method = reqTokens.nextToken();
 
     if ("POST".equals(method)) {
-      createPostResault(reqTokens);
+      handlePost(reqTokens);
     } else if ("GET".equals(method)) {
-      createGetResault(reqTokens);
+      handleGet(reqTokens);
     } else {
       this.res.println(HttpGenerator.getNotFoundRes());
     }
