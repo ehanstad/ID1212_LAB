@@ -8,6 +8,10 @@ import java.io.*;
 public class HttpURLConnectionClient {
 
 	private String cookieId;
+	private String guess = "50";
+	private int overLimit = 100;
+	private int underLimit = 0;
+	private int noGuesses = 0;
 
 	public void init() {
 		URL url = null;
@@ -26,7 +30,6 @@ public class HttpURLConnectionClient {
 	}
 
 	public void game() {
-		Scanner input = new Scanner(System.in);
 		String line;
 		URL url = null;
 		try {
@@ -34,14 +37,14 @@ public class HttpURLConnectionClient {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
-		while ((line = input.nextLine()) != null) {
+		while (true) {
 			try {
 				HttpURLConnection con = null;
 				con = (HttpURLConnection) url.openConnection();
 				con.setRequestMethod("POST");
 				con.setRequestProperty("User-Agent", "Mozilla");
 				con.setRequestProperty("Cookie", this.cookieId);
-				String urlParameters = "guessedNumber=" + line;
+				String urlParameters = "guessedNumber=" + this.guess;
 				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 				con.setRequestProperty("Content-Length", Integer.toString(postData.length));
 				con.setDoOutput(true);
@@ -50,8 +53,26 @@ public class HttpURLConnectionClient {
 				}
 
 				con.connect();
-				System.out.println();
 
+				BufferedReader infile = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String[] res = infile.readLine().split(" ");
+				String result = res[2];
+				if(result.equals("higher.")) {
+					this.underLimit = Integer.parseInt(this.guess);
+					this.noGuesses++;
+					Integer guess = (this.underLimit + ((this.overLimit-this.underLimit)/2));
+					this.guess = guess.toString();
+					System.out.println(this.guess);
+				} else if(result.equals("lower.")) {
+					this.overLimit = Integer.parseInt(this.guess);
+					this.noGuesses++;
+					Integer guess = (this.underLimit + ((this.overLimit-this.underLimit)/2));
+					this.guess = guess.toString();
+					System.out.println(this.guess);
+				} else {
+					System.out.println("wohhhhhoooo");
+					break;
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
