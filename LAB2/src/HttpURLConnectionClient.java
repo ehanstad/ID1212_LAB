@@ -9,12 +9,13 @@ public class HttpURLConnectionClient {
 
 	private String cookieId;
 	private String guess = "50";
-	private int overLimit = 100;
+	private int overLimit = 101;
 	private int underLimit = 0;
-	private int noGuesses = 0;
+	private int noGuesses = 1;
 
-	public void init() {
+	public int init() {
 		URL url = null;
+		int noGuesses = 0;
 		try {
 			url = new URL("http://localhost:8080/index.html");
 			HttpURLConnection con = null;
@@ -23,13 +24,14 @@ public class HttpURLConnectionClient {
 			con.connect();
 
 			this.cookieId = con.getHeaderField(3);
-			game();
+			noGuesses = game();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return noGuesses;
 	}
 
-	public void game() {
+	public int game() {
 		String line;
 		URL url = null;
 		try {
@@ -62,16 +64,14 @@ public class HttpURLConnectionClient {
 					this.noGuesses++;
 					Integer guess = (this.underLimit + ((this.overLimit-this.underLimit)/2));
 					this.guess = guess.toString();
-					System.out.println(this.guess);
 				} else if(result.equals("lower.")) {
 					this.overLimit = Integer.parseInt(this.guess);
 					this.noGuesses++;
 					Integer guess = (this.underLimit + ((this.overLimit-this.underLimit)/2));
 					this.guess = guess.toString();
-					System.out.println(this.guess);
 				} else {
-					System.out.println("wohhhhhoooo");
-					break;
+					System.out.println("Number of Guesses: " + this.noGuesses);
+					return this.noGuesses;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -80,16 +80,15 @@ public class HttpURLConnectionClient {
 	}
 
 	public static void main(String[] args) {
-		HttpURLConnectionClient session = new HttpURLConnectionClient();
-		session.init();
-		// url = new URL("http://localhost:8080/index.html");
+		int guessList = 0;
+		int noGames = 0;
 
-		// BufferedReader infile = null;
-		// infile = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		// System.out.println(con.getRequestMethod());
-		// String row = null;
-		// while ((row = infile.readLine()) != null) {
-		// System.out.println(row);
-		// }
+		while (noGames<=100) {
+			HttpURLConnectionClient session = new HttpURLConnectionClient();
+			int noGuesses = session.init();
+			guessList += noGuesses;
+			noGames++;
+		}
+		System.out.println("The avrage number of guesses is: " + (guessList/noGames));
 	}
 }
