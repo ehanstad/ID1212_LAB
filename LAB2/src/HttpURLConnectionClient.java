@@ -59,7 +59,7 @@ public class HttpURLConnectionClient {
 				if (result.equals("higher.")) {
 					this.min = Integer.parseInt(this.guess);
 					this.noGuesses++;
-					Integer guess = (this.min + ((this.max - this.min) / 2));
+					Integer guess = (this.min + ((this.max - this.min + 1) / 2));
 					this.guess = guess.toString();
 				} else if (result.equals("lower.")) {
 					this.max = Integer.parseInt(this.guess);
