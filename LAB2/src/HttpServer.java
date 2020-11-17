@@ -11,18 +11,18 @@ public class HttpServer {
     this.port = port;
   }
 
-  public void saveInstance(Guess guess, String client) {
+  public void saveInstance(String client) {
     System.out.println("saveInstance: " + client);
-    instances.put(client, guess);
+    instances.put(client, new Guess());
   }
 
   public Guess getInstance(String client) {
     System.out.println("GetInstance: " + client);
     Enumeration<String> enumer = instances.keys();
     Guess instance = null;
-    while(enumer.hasMoreElements()) {
+    while (enumer.hasMoreElements()) {
       String nElem = enumer.nextElement();
-      if(client.contains(nElem)){
+      if (client.contains(nElem)) {
         instance = instances.get(nElem);
       }
     }

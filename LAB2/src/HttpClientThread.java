@@ -7,14 +7,19 @@ public class HttpClientThread extends Thread {
 
   private Socket socket;
   private HttpServer server;
-  private Guess instance;
+  private PrintStream res;
 
   public HttpClientThread(Socket socket, HttpServer server) {
     this.socket = socket;
     this.server = server;
+    try {
+      this.res = new PrintStream(socket.getOutputStream());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
-  private void createPostResault(PrintStream res, StringTokenizer reqTokens) throws IOException {
+  private void createPostResault(StringTokenizer reqTokens) throws IOException {
     int guessedNumber = 0;
     String token;
     String uniqueID = null;
@@ -24,43 +29,43 @@ public class HttpClientThread extends Thread {
         guessedNumber = Integer.parseInt(reqTokens.nextToken());
       }
       if (token.equals("uniqueID")) {
-        uniqueID = reqTokens.nextToken();
+        uniqueID = reqTokens.nextToken().toString();
       }
     }
     Guess guess = server.getInstance(uniqueID);
-    this.instance = guess;
-
-    this.instance.setGuessedNumber(guessedNumber);
-    int noGuesses = this.instance.getNoGuesses();
-    short cmp = this.instance.checkGuess(guessedNumber);
-    res.println(HttpGenerator.getGuessRes(guessedNumber, noGuesses, cmp));
+    if (!(guess == null)) {
+      guess.setGuessedNumber(guessedNumber);
+      int noGuesses = guess.getNoGuesses();
+      short cmp = guess.checkGuess(guessedNumber);
+      this.res.println(HttpGenerator.getGuessRes(guessedNumber, noGuesses, cmp));
+    } else {
+      System.out.println("guess is null");
+    }
   }
 
-  private void createGetResault(PrintStream res, StringTokenizer reqTokens) throws IOException {
+  private void createGetResault(StringTokenizer reqTokens) throws IOException {
     String path = reqTokens.nextToken();
     if (!"/favicon".equals(path)) {
-      this.instance = new Guess();
-      String uniqueID = UUID.randomUUID().toString();
-      server.saveInstance(this.instance, uniqueID);
       if ("/index.html".equals(path)) {
-        res.println(HttpGenerator.getStartRes(uniqueID));
+        String uniqueID = UUID.randomUUID().toString();
+        server.saveInstance(uniqueID);
+        this.res.println(HttpGenerator.getStartRes(uniqueID));
       } else {
-        res.println(HttpGenerator.getNotFoundRes());
+        this.res.println(HttpGenerator.getNotFoundRes());
       }
     }
   }
 
   void handleRequest(String req) throws IOException {
-    PrintStream res = new PrintStream(this.socket.getOutputStream());
     StringTokenizer reqTokens = new StringTokenizer(req, " =?;\n");
     String method = reqTokens.nextToken();
 
     if ("POST".equals(method)) {
-      createPostResault(res, reqTokens);
+      createPostResault(reqTokens);
     } else if ("GET".equals(method)) {
-      createGetResault(res, reqTokens);
+      createGetResault(reqTokens);
     } else {
-      res.println(HttpGenerator.getNotFoundRes());
+      this.res.println(HttpGenerator.getNotFoundRes());
     }
     this.socket.shutdownOutput();
     this.socket.close();
