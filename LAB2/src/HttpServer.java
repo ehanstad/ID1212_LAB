@@ -5,28 +5,25 @@ import java.util.Enumeration;
 
 public class HttpServer {
   private int port;
-  private Hashtable<String, Guess> instances = new Hashtable<String, Guess>();
+  private Hashtable<String, Guess> sessions = new Hashtable<String, Guess>();
 
   public HttpServer(Integer port) {
     this.port = port;
   }
 
-  public void saveInstance(String client) {
-    System.out.println("saveInstance: " + client);
-    instances.put(client, new Guess());
+  public void saveSession(String sessionID) {
+    sessions.put(sessionID, new Guess());
   }
 
-  public Guess getInstance(String client) {
-    System.out.println("GetInstance: " + client);
-    Enumeration<String> enumer = instances.keys();
-    Guess instance = null;
+  public Guess getSession(String sessionID) {
+    Enumeration<String> enumer = sessions.keys();
     while (enumer.hasMoreElements()) {
       String nElem = enumer.nextElement();
-      if (client.contains(nElem)) {
-        instance = instances.get(nElem);
+      if (sessionID.contains(nElem)) {
+        return sessions.get(nElem);
       }
     }
-    return instance;
+    return null;
   }
 
   void run() throws IOException {

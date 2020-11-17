@@ -1,21 +1,19 @@
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
 import java.net.MalformedURLException;
 import java.net.HttpURLConnection;
 import java.io.*;
 
 public class HttpURLConnectionClient {
 
-	private String cookieId;
+	private String cookie;
 	private String guess = "50";
-	private int overLimit = 101;
-	private int underLimit = 0;
-	private int noGuesses = 1;
+	private int max = 100;
+	private int min = 0;
+	private int noGuesses = 0;
 
-	public int init() {
+	public int play() {
 		URL url = null;
-		int noGuesses = 0;
 		try {
 			url = new URL("http://localhost:8080/index.html");
 			HttpURLConnection con = null;
@@ -23,16 +21,15 @@ public class HttpURLConnectionClient {
 			con.setRequestProperty("User-Agent", "Mozilla");
 			con.connect();
 
-			this.cookieId = con.getHeaderField(3);
-			noGuesses = game();
+			this.cookie = con.getHeaderField(3);
+			game();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return noGuesses;
+		return this.noGuesses;
 	}
 
-	public int game() {
-		String line;
+	public void game() {
 		URL url = null;
 		try {
 			url = new URL("http://localhost:8080/guess");
@@ -45,7 +42,7 @@ public class HttpURLConnectionClient {
 				con = (HttpURLConnection) url.openConnection();
 				con.setRequestMethod("POST");
 				con.setRequestProperty("User-Agent", "Mozilla");
-				con.setRequestProperty("Cookie", this.cookieId);
+				con.setRequestProperty("Cookie", this.cookie);
 				String urlParameters = "guessedNumber=" + this.guess;
 				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 				con.setRequestProperty("Content-Length", Integer.toString(postData.length));
@@ -59,19 +56,20 @@ public class HttpURLConnectionClient {
 				BufferedReader infile = new BufferedReader(new InputStreamReader(con.getInputStream()));
 				String[] res = infile.readLine().split(" ");
 				String result = res[2];
-				if(result.equals("higher.")) {
-					this.underLimit = Integer.parseInt(this.guess);
+				if (result.equals("higher.")) {
+					this.min = Integer.parseInt(this.guess);
 					this.noGuesses++;
-					Integer guess = (this.underLimit + ((this.overLimit-this.underLimit)/2));
+					Integer guess = (this.min + ((this.max - this.min) / 2));
 					this.guess = guess.toString();
-				} else if(result.equals("lower.")) {
-					this.overLimit = Integer.parseInt(this.guess);
+				} else if (result.equals("lower.")) {
+					this.max = Integer.parseInt(this.guess);
 					this.noGuesses++;
-					Integer guess = (this.underLimit + ((this.overLimit-this.underLimit)/2));
+					Integer guess = (this.min + ((this.max - this.min) / 2));
 					this.guess = guess.toString();
 				} else {
+					this.noGuesses++;
 					System.out.println("Number of Guesses: " + this.noGuesses);
-					return this.noGuesses;
+					return;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -80,15 +78,15 @@ public class HttpURLConnectionClient {
 	}
 
 	public static void main(String[] args) {
-		int guessList = 0;
-		int noGames = 0;
+		int totalGuesses = 0;
+		int noGames = 100;
 
-		while (noGames<=100) {
+		for (int i = 0; i < noGames; i++) {
 			HttpURLConnectionClient session = new HttpURLConnectionClient();
-			int noGuesses = session.init();
-			guessList += noGuesses;
-			noGames++;
+			int noGuesses = session.play();
+			totalGuesses += noGuesses;
 		}
-		System.out.println("The avrage number of guesses is: " + (guessList/noGames));
+		double avg = ((double) totalGuesses / (double) noGames);
+		System.out.format("The average number of guesses is ≈ %.2f\n", avg);
 	}
 }

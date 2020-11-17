@@ -4,9 +4,9 @@ public class HttpGenerator {
   private final static String http404 = "HTTP/1.1 404 Not Found\n" + "Server: Counting game 1.0\n"
       + "Content-Type: text/html\n\n" + "404 Not Found";
 
-  public static String getStartRes(String uid) {
+  public static String getStartRes(String sessionID) {
     StringBuilder sb = new StringBuilder(http200);
-    sb.append("Set-Cookie: uniqueID=" + uid + "\n");
+    sb.append("Set-Cookie: sessionID=" + sessionID + "\n");
     sb.append("\n");
     sb.append("<html>");
     sb.append(
