@@ -15,7 +15,7 @@ public class HttpURLConnectionClient {
 	public int play() {
 		URL url = null;
 		try {
-			url = new URL("http://localhost:8080/index.html");
+			url = new URL("http://localhost:8888/index.html");
 			HttpURLConnection con = null;
 			con = (HttpURLConnection) url.openConnection();
 			con.setRequestProperty("User-Agent", "Mozilla");
@@ -32,7 +32,7 @@ public class HttpURLConnectionClient {
 	public void game() {
 		URL url = null;
 		try {
-			url = new URL("http://localhost:8080/guess");
+			url = new URL("http://localhost:8888/guess");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
