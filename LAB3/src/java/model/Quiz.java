@@ -10,6 +10,10 @@ public class Quiz implements java.io.Serializable {
 
   }
   
+  public void setAnswered(Integer id,String answered) {
+      questions.get(id).setAnswered(answered);
+  }
+  
   public String getQuiz() {
       StringBuilder sb = new StringBuilder();
       Iterator<HashMap.Entry<Integer,Question>> iter = questions.entrySet().iterator();
@@ -21,9 +25,20 @@ public class Quiz implements java.io.Serializable {
       }
       return sb.toString();
   }
+  
+  public String getAlternatives() {
+      StringBuilder sb = new StringBuilder();
+      Iterator<HashMap.Entry<Integer,Question>> iter = questions.entrySet().iterator();
+      while(iter.hasNext()) {
+        HashMap.Entry<Integer,Question> entry = iter.next();
+        Question nElem = entry.getValue();
+        sb.append(nElem.getAlternatives());
+      }
+      return sb.toString();
+  }
 
   public void addQuestion(Integer id, String question) {
-    Question quest = new Question(question);
+    Question quest = new Question(id,question);
     questions.put(id,quest);
   }
 

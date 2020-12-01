@@ -5,23 +5,47 @@ import java.util.Iterator;
 public class Question {
 
   private String question;
+  private Integer qid;
   private HashMap<Integer, Alternative> alternatives = new HashMap<Integer, Alternative>();
 
-  public Question(String question) {
+  public Question(Integer qid,String question) {
+    this.qid=qid;
     this.question = question;
   }
   
   public String getQuestion() {
       StringBuilder sb = new StringBuilder();
-      sb.append(this.question);
+      sb.append(this.question + "#");
       Iterator<HashMap.Entry<Integer,Alternative>> iter = alternatives.entrySet().iterator();
       while(iter.hasNext()) {
         HashMap.Entry<Integer,Alternative> entry = iter.next();
         Alternative nElem = entry.getValue();
         sb.append(nElem.getAlternative());
-        sb.append(",");
+        sb.append("#");
       }
       return sb.toString();
+  }
+  
+  public String getAlternatives() {
+      StringBuilder sb = new StringBuilder();
+      Iterator<HashMap.Entry<Integer,Alternative>> iter = alternatives.entrySet().iterator();
+      while(iter.hasNext()) {
+        HashMap.Entry<Integer,Alternative> entry = iter.next();
+        Alternative nElem = entry.getValue();
+        sb.append(nElem.getAlternative()+"#"+this.qid+"#");
+      }
+      return sb.toString();
+  }
+  
+  public void setAnswered(String answered){
+      Iterator<HashMap.Entry<Integer,Alternative>> iter = alternatives.entrySet().iterator();
+      while(iter.hasNext()) {
+        HashMap.Entry<Integer,Alternative> entry = iter.next();
+        Alternative nElem = entry.getValue();
+        if(nElem.getAlternative().equals(answered)) {
+            nElem.setAnswered(true);
+        }
+      }
   }
 
   public void addAlternative(Integer id, String alternative, boolean answer) {

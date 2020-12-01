@@ -7,29 +7,27 @@
         <title>Quiz</title>
     </head>
     <body>
-        <p> FROM DB:
-            <%=quiz.getQuiz()%>
-        </p>
-    <form>
-      <h2>Question 1</h2>
-      <h3>How are you?</h3>
-      <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-      <label for="vehicle1"> I have a bike</label><br>
-      <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-      <label for="vehicle2"> I have a car</label><br>
-      <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-      <label for="vehicle3"> I have a boat</label><br><br>
-
-      <h2>Question 2</h2>
-      <h3>?</h3>
-      <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-      <label for="vehicle1"> I have a bike</label><br>
-      <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-      <label for="vehicle2"> I have a car</label><br>
-      <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-      <label for="vehicle3"> I have a boat</label><br><br>
-      <input type="submit" value="Submit">
-    </form>
-
+        <form method="post" action="./QuizServlet">
+            <%
+            String[] question = quiz.getQuiz().split("\n");
+            for(int i=0; i<question.length; i++){
+                String[] alternatives = question[i].split("#");
+                %>
+                <h2><%out.println(alternatives[0]);%></h2>
+                <%
+                for(int j=1; j<alternatives.length; j++){
+                    %>
+                    <input type="checkbox" 
+                           id=<%out.println(i+""+j);%>
+                           name=<%out.println(alternatives[j]);%>
+                    >
+                    <label><%out.println(alternatives[j]);%></label><br>     
+                    <%
+                }
+            }
+            %>
+        <br>
+        <input type="submit" value="Submit">
+      </form>
     </body>
 </html>

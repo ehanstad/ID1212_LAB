@@ -1,3 +1,4 @@
+<jsp:useBean class="model.Quiz" id="quiz" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 <html>
     <head>
@@ -5,7 +6,6 @@
         <title>Login</title>
     </head>
     <body>
-
     <h2>Welcome</h2>
     <form action="./quiz.jsp" method="post">
       <input type="email" name="email" placeholder="Email" /> <br/><br/>

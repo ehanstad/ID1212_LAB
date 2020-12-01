@@ -25,7 +25,6 @@ public class DBServlet extends HttpServlet {
         response.setContentType("text/html");
         RequestDispatcher rd = request.getRequestDispatcher("index.html");
         PrintWriter out = response.getWriter();
-        out.println("Connecting to DB.");
         try {
             Context initContext = new InitialContext();
             Context envContext = (Context) initContext.lookup("java:/comp/env");
@@ -46,6 +45,7 @@ public class DBServlet extends HttpServlet {
             while (rs.next()) {
                 quiz.addAlternative(rs.getInt("question"), rs.getInt("aid"), rs.getString("alternative"), rs.getBoolean("correct"));
             }
+            out.println(quiz.getQuiz());
             st.close();
             rd.forward(request, response);
         } catch(Exception e){

@@ -4,7 +4,7 @@ public class Alternative {
 
   private String alternative;
   private boolean answer;
-  private boolean answered;
+  private boolean answered=false;
 
   public Alternative(String alternative, boolean answer) {
     this.alternative=alternative;
@@ -20,7 +20,7 @@ public class Alternative {
   }
 
   public boolean checkCorrect() {
-    return answer==answered;
+    return this.answered==this.answer;
   }
 
 }
