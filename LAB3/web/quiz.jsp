@@ -1,6 +1,7 @@
 <jsp:useBean class="model.Quiz" id="quiz" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
