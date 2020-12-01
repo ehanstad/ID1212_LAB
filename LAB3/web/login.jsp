@@ -1,3 +1,4 @@
+<jsp:useBean class="model.Quiz" id="quiz" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 <html>
     <head>
@@ -5,14 +6,8 @@
         <title>Login</title>
     </head>
     <body>
-
-<%
-  out.println(session.getId());
-  out.println(request.getHeader("Cookie"));
-%>
-
     <h2>Welcome</h2>
-    <form>
+    <form action="./quiz.jsp" method="post">
       <input type="email" name="email" placeholder="Email" /> <br/><br/>
       <input type="text" name="uname" placeholder="Username" /> <br/><br/>
       <input type="password" name="password" placeholder="Password" /> <br/><br/>
