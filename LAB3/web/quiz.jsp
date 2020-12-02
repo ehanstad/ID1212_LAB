@@ -19,8 +19,8 @@
                 for(int j=1; j<alternatives.length; j++){
                     %>
                     <input type="checkbox" 
-                           id=<%out.println(i+""+j);%>
-                           name=<%out.println(alternatives[j]);%>
+                        id=<%out.println(i+""+j);%>     
+                        name=<%out.println(alternatives[j]);%>
                     >
                     <label><%out.println(alternatives[j]);%></label><br>     
                     <%

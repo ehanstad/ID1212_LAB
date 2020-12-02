@@ -1,6 +1,7 @@
 <jsp:useBean class="model.Quiz" id="quiz" scope="session"></jsp:useBean>
 <!DOCTYPE html>
 
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -18,8 +19,8 @@
                 for(int j=1; j<alternatives.length; j++){
                     %>
                     <input type="checkbox" 
-                           id=<%out.println(i+""+j);%>
-                           name=<%out.println(alternatives[j]);%>
+                        id=<%out.println(i+""+j);%>     
+                        name=<%out.println(alternatives[j]);%>
                     >
                     <label><%out.println(alternatives[j]);%></label><br>     
                     <%
