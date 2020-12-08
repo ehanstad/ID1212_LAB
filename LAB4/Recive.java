@@ -2,13 +2,13 @@ import java.io.*;
 import java.net.*;
 import javax.net.ssl.*;
 
-public class Client{
+public class Recive {
 
   private SSLSocket socket;
   private PrintWriter writer;
   private BufferedReader reader;
 
-    private void init(String host, int port){
+    private void init(String host, int port) {
 
       SSLSocketFactory sf = (SSLSocketFactory)SSLSocketFactory.getDefault();
       SSLSocket socket = null;
@@ -78,7 +78,7 @@ public class Client{
     }
 
     public static void main(String[] args) throws Exception {
-      Client client = new Client();
+      Recive client = new Recive();
       client.init("webmail.kth.se",993);
       client.fetchMessage();
     }
