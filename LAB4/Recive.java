@@ -29,7 +29,8 @@ public class Recive {
     private void printResponse(String command, String tag) throws IOException {
       this.writer.print(command);
       this.writer.flush();
-      System.out.print(command);
+      if(!tag.equals("a001"))
+        System.out.print(command);
       String response = getResponse(tag);
       System.out.println(response);
     }
@@ -50,7 +51,7 @@ public class Recive {
     private void fetchMessage() {
 
       String str;
-      String login = "a001 login uname password\r\n";
+      String login = "a001 login " + Conf.username + " " + Conf.password + "\r\n";
       String inbox_select = "a002 select inbox\r\n";
       String fetch_full = "a003 fetch 1 full\r\n";
       String fetch_body = "a004 fetch 1 body[header]\r\n";

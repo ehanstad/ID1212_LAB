@@ -73,10 +73,11 @@ public class Send {
     String login = "AUTH LOGIN\r\n";
     String uname = encode64(Conf.username.getBytes()) + "\r\n";
     String password = encode64(Conf.password.getBytes()) + "\r\n";
-    String mail_from = "MAIL FROM:<test@mail.com>\r\n";
-    String rcpt_to = "RCPT TO:<ehanstad@kth.se>\r\n";
+    String mail_from = "MAIL FROM:<ehanstad@kth.se>\r\n";
+    String rcpt_to = "RCPT TO:<lucasvi@kth.se>\r\n";
     String data = "DATA\r\n";
-    String mail = "Visualizing the realism of life in actuality\n" + ".\n\r\n";
+    String mail = "Visualizing the realism of life in actuality\r\n";
+    String end_mail = ".\r\n";
     String quit = "QUIT\r\n";
 
     try {
@@ -84,15 +85,14 @@ public class Send {
       printResponse(helo, "DSN");
       printResponse(login, "334");
       printResponse(uname, "334");
-      this.writer.print(password);
-      this.writer.flush();
-      System.out.print(password);
-      System.out.println(this.reader.readLine());
       printResponse(password, "235");
       printResponse(mail_from, "250");
       printResponse(rcpt_to, "250");
       printResponse(data, "354");
-      printResponse(mail, "250");
+      this.writer.print(mail);
+      this.writer.flush();
+      System.out.print(mail);
+      printResponse(end_mail, "250");
       printResponse(quit, "221");
 
       this.writer.close();
