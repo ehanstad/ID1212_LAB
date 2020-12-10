@@ -30,15 +30,22 @@ public class HttpServer {
 
   void run() throws Exception {
 
-    char[] password = "password".toCharArray();
-    KeyStore ks = KeyStore.getInstance("jks");
-    FileInputStream f = new FileInputStream("cert.cer");
-    ks.load(f,password);
+    char[] password = "rihanna".toCharArray();
+    //KeyStore ks = KeyStore.getInstance("jks", "SUN");
+    FileInputStream f = new FileInputStream("../.keystore");
+    KeyStore ks = KeyStore.getInstance("jks", "SUN");
+    //InputStream tstore = HttpServer.class
+        //.getResourceAsStream("../" + ".keystore");
+    ks.load(f, password);
+    //tstore.close();
+    //ks.load(f,password);
 
-    KeyManagerFactory kmf = KeyManagerFactory.getInstance("RSA");
+    KeyManagerFactory kmf = KeyManagerFactory.getInstance(
+                              KeyManagerFactory.getDefaultAlgorithm());
     kmf.init(ks,password);
 
-    TrustManagerFactory tmf = TrustManagerFactory.getInstance("RSA");
+    TrustManagerFactory tmf = TrustManagerFactory.getInstance(
+                              TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(ks);
     SSLContext sslc = SSLContext.getInstance("TLS");
     sslc.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
