@@ -53,8 +53,8 @@ public class Recive {
       String str;
       String login = "a001 login " + Conf.username + " " + Conf.password + "\r\n";
       String inbox_select = "a002 select inbox\r\n";
-      String fetch_full = "a003 fetch 1 full\r\n";
-      String fetch_body = "a004 fetch 1 body[header]\r\n";
+      String fetch_full = "a003 fetch 47 full\r\n";
+      String fetch_body = "a004 fetch 47 body[text]\r\n";
       String logout = "a005 logout\r\n";
 
       try {
