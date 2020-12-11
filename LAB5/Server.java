@@ -1,10 +1,15 @@
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMultipart;
+
 import com.sun.mail.imap.*;
 
 public class Server extends UnicastRemoteObject implements MailService {
@@ -47,9 +52,33 @@ public class Server extends UnicastRemoteObject implements MailService {
   private String messageToString(Message message) throws Exception {
     StringBuilder sb = new StringBuilder();
     sb.append("---------------------------------\n");
+
+    Address[] froms = message.getFrom();
+    String mailFrom = froms == null ? null : ((InternetAddress) froms[0]).getAddress();
+    sb.append("From: " + mailFrom + "\n");
+
     sb.append("Subject: " + message.getSubject() + "\n");
-    sb.append("From: " + message.getFrom() + "\n");
-    sb.append("Text: " + message.getContent().toString() + "\n");
+
+    if (message.isMimeType("text/plain")) {
+      sb.append("Text: " + message.getContent().toString() + "\n");
+    } else if (message.isMimeType("multipart/*")) {
+      MimeMultipart multipart = (MimeMultipart) message.getContent();
+      sb.append(mimeMultiToString(multipart));
+    }
+    return sb.toString();
+
+  }
+
+  private String mimeMultiToString(MimeMultipart multipart) throws MessagingException, IOException {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < multipart.getCount(); i++) {
+      BodyPart bodyPart = multipart.getBodyPart(i);
+      if (bodyPart.isMimeType("text/plain")) {
+        sb.append(bodyPart.getContent() + "\n");
+      } else if (bodyPart.getContent() instanceof MimeMultipart) {
+        sb.append(mimeMultiToString((MimeMultipart) bodyPart.getContent()));
+      }
+    }
     return sb.toString();
   }
 
