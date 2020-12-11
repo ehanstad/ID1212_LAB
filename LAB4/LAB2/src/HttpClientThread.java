@@ -3,13 +3,15 @@ import java.net.*;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
+import javax.net.ssl.SSLSocket;
+
 public class HttpClientThread extends Thread {
 
-  private Socket socket;
+  private SSLSocket socket;
   private HttpServer server;
   private PrintStream res;
 
-  public HttpClientThread(Socket socket, HttpServer server) {
+  public HttpClientThread(SSLSocket socket, HttpServer server) {
     this.socket = socket;
     this.server = server;
     try {
