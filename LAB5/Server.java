@@ -36,12 +36,11 @@ public class Server extends UnicastRemoteObject implements MailService {
   private Session getImapSession(String host, int port) {
     Properties props = new Properties();
     props.setProperty("mail.store.protocol", "imap");
-    props.setProperty("mail.imap.host", host);
+    props.put("mail.imap.host", host);
     props.put("mail.imap.port", port);
     props.put("mail.imap.ssl.enable", "true");
-    Session session = Session.getDefaultInstance(props, null);
 
-    session.setDebug(true);
+    Session session = Session.getDefaultInstance(props, null);
     return session;
   }
 
