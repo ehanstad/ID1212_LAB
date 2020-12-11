@@ -1,9 +1,17 @@
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
 
 import javax.mail.*;
 import com.sun.mail.imap.*;
 
-public class Server {
+public class Server extends UnicastRemoteObject implements MailService {
+
+  public Server() throws RemoteException {
+    super();
+  }
 
   public String fetchMail(String host, int port, String username, String password) {
 
@@ -17,8 +25,7 @@ public class Server {
       inbox.open(Folder.READ_ONLY);
 
       Message[] messages = inbox.getMessages();
-      System.out.println("messages.length = " + messages.length);
-      System.out.println(messageToString(messages[messages.length - 1]));
+      return messageToString(messages[messages.length - 1]);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -45,6 +52,11 @@ public class Server {
     sb.append("From: " + message.getFrom() + "\n");
     sb.append("Text: " + message.getContent().toString() + "\n");
     return sb.toString();
+  }
+
+  public static void main(String[] args) throws RemoteException {
+    Registry registry = LocateRegistry.createRegistry(4444);
+    registry.rebind("mail", new Server());
   }
 
 }
