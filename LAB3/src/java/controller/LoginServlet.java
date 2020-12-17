@@ -13,18 +13,37 @@ import javax.servlet.annotation.WebServlet;
 
 @WebServlet(name="LoginServlet", urlPatterns = {"/LoginServlet"})
 public class LoginServlet extends HttpServlet {
-   @EJB
-   private UserDAOLocal userDao;
+
+  private dbHandler.UserDAO userDao; 
     
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         throws IOException, ServletException {
-      PrintWriter out = response.getWriter();
-      short admin = 1;
-      User user = new User("root", "root@me.se", "kanye", admin);
-      out.println(user);
-      out.println(userDao);
-      //userDao.addUser(user);
-      //request.getRequestDispatcher("login.jsp").forward(request, response);
+      try {
+        PrintWriter out = response.getWriter();
+        String uname = request.getParameter("uname");
+        String writtenPassword = request.getParameter("password");
+        this.userDao = new dbHandler.UserDAO();
+        User user = this.userDao.getUser(uname);
+        if(user==null) {
+            
+            out.println("No user with that name");
+            //request.getRequestDispatcher("login.jsp").forward(request, response);
+        } else {
+            String password = user.getPassword();
+            Short admin = user.getAdmin();
+            if(password.equals(writtenPassword)) {
+                if(admin==1) {
+                    request.getRequestDispatcher("admin.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("quiz.jsp").forward(request, response);
+                }
+            } else {
+                out.println("Wrong password");
+            }
+        }
+      } catch(Exception e) {
+          e.printStackTrace();
+      }
   }
 }

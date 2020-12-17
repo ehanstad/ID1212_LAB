@@ -1,8 +1,8 @@
 package dbHandler;
 
-import javax.ejb.Local;
+//import javax.ejb.Local;
 
-@Local
+//@Local
 public interface UserDAOLocal {
 
     void addUser(User user);
