@@ -1,29 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package controller;
 
-import java.sql.PreparedStatement;
+import dbHandler.Alternatives;
+import dbHandler.Question;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author L V
- */
 public class AdminServlet extends HttpServlet {
+    
+    private dbHandler.QuestionDAO questionDao;
+    private dbHandler.AlternativesDAO altDao; 
     
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -32,10 +22,6 @@ public class AdminServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         RequestDispatcher rd = request.getRequestDispatcher("index.html");
         try {
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup("java:/comp/env");
-            DataSource ds = (DataSource) envContext.lookup("jdbc/mysql");
-            Connection con = ds.getConnection();
             
             String question = request.getParameter("question");
             
@@ -45,52 +31,43 @@ public class AdminServlet extends HttpServlet {
             alt[2] = request.getParameter("alt3");
             alt[3] = request.getParameter("alt4");
       
-            boolean altans[] = new boolean[4];
-            altans[0] = false;
-            altans[1] = false;
-            altans[2] = false;
-            altans[3] = false;
+            short altans[] = new short[4];
+            altans[0] = 0;
+            altans[1] = 0;
+            altans[2] = 0;
+            altans[3] = 0;
             if(request.getParameter("alt1answer") != null){
-                altans[0] = true;
+                altans[0] = 1;
             }
             if(request.getParameter("alt2answer") != null){
-                altans[1] = true;
+                altans[1] = 1;
             }
             if(request.getParameter("alt3answer") != null){
-                altans[2] = true;
+                altans[2] = 1;
             }
             if(request.getParameter("alt4answer") != null){
-                altans[3] = true;
+                altans[3] = 1;
             }
             
-            String query1 = "INSERT INTO quiz.question (question) VALUES (?);";
-            PreparedStatement st1 = con.prepareStatement(query1);
-            st1.setString(1, question);
-            st1.execute();
-            st1.close();
+            this.questionDao = new dbHandler.QuestionDAO();
+            this.altDao = new dbHandler.AlternativesDAO();
+            Question newQuestion = new Question();
+            newQuestion.setQuestion(question);
+            int qid = this.questionDao.getQid();
+            newQuestion.setQid(qid + 1);
+            this.questionDao.addQuestion(newQuestion);
+            int aid = this.altDao.getAid();
             
-            String query2 = "SELECT qid FROM quiz.question WHERE ? = question";
-            PreparedStatement st2 = con.prepareStatement(query2);
-            st2.setString(1, question);
-            ResultSet rs = st2.executeQuery();
-            int qid = 0;
-            while (rs.next()) {
-                qid = rs.getInt("qid");
+            for(int i=0; i<alt.length; i++) {
+                Alternatives newAlt = new Alternatives();
+                newAlt.setAid(++aid);
+                newAlt.setAlternative(alt[i]);
+                newAlt.setCorrect(altans[i]);
+                newAlt.setQuestion(newQuestion);
+                this.altDao.addAlternative(newAlt);
             }
-            st2.close();
             
-            String query3 = "INSERT INTO quiz.alternatives (alternative, correct, question)\n" +                
-                    "	VALUES (?, ?, ?);\n";
-            for(int i = 0; i < alt.length; i++){
-                PreparedStatement st3 = con.prepareStatement(query3);
-                st3.setString(1, alt[i]);
-                st3.setBoolean(2, altans[i]);
-                st3.setInt(3, qid);
-                st3.execute();
-                st3.close();
-            }
-            con.close();
-            rd.forward(request, response);
+           rd.forward(request, response);
         } catch(Exception e){
             out.println(e.getMessage());
         }

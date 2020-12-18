@@ -4,24 +4,25 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public class UserDAO{
-
+public class AlternativesDAO {
+    
     private EntityManager em;
     private EntityManagerFactory emf;
-
-    public UserDAO(){
+    
+    public AlternativesDAO(){
         emf = Persistence.createEntityManagerFactory("LAB3PU");
         em = emf.createEntityManager();
     }
-
-    public void addUser(User user) {
+    
+    public void addAlternative(Alternatives alt) {
         em.getTransaction().begin();
         
-        em.persist(user);
+        em.persist(alt);
         em.getTransaction().commit();
     }
-
-    public User getUser(String uname) {
-        return em.find(User.class, uname);
+    
+    public int getAid() {
+        return em.createQuery("SELECT MAX(a.aid) FROM Alternatives a", Integer.class)
+                .getSingleResult();
     }
 }

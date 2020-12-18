@@ -1,27 +1,29 @@
 package dbHandler;
 
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public class UserDAO{
+public class QuestionDAO {
 
     private EntityManager em;
     private EntityManagerFactory emf;
 
-    public UserDAO(){
+    public QuestionDAO(){
         emf = Persistence.createEntityManagerFactory("LAB3PU");
         em = emf.createEntityManager();
     }
-
-    public void addUser(User user) {
+    
+    public void addQuestion(Question question) {
         em.getTransaction().begin();
         
-        em.persist(user);
+        em.persist(question);
         em.getTransaction().commit();
     }
 
-    public User getUser(String uname) {
-        return em.find(User.class, uname);
+    public int getQid() {
+        return em.createQuery("SELECT MAX(q.qid) FROM Question q", Integer.class)
+                .getSingleResult();
     }
 }
